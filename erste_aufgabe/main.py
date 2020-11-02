@@ -1,5 +1,5 @@
 import sqlite3 as sql
-import pandas
+import pandas as pd
 import requests
 from requests.auth import HTTPBasicAuth
 from zipfile import ZipFile
@@ -28,14 +28,24 @@ def main():
 
     conn = sql.connect('the.db')
     # Create dataframe with renamed columns
-    d = pandas.read_csv(open('data.txt'), delimiter=";", header=0, names=['id', 'timestamp', 'qn', 'airpressure',
-                                                                          'temperature', 'temperature_ground', 'humidity',
-                                                                          'temperature_dew', 'eor'])
+    df = pd.read_csv(open('data.txt'), delimiter=";", header=0, names=['id', 'timestamp', 'qn', 'airpressure',
+                                                                          'temperature', 'temperature_ground',
+                                                                          'humidity', 'temperature_dew', 'eor'])
     # Drop irrelevant data
-    d = d.query("timestamp > 202010131050 & timestamp < 202010232400")\
-         .drop(['qn', 'eor'], axis=1)
+    df = df.query("timestamp > 202010131050 & timestamp < 202010232400")\
+           .drop(['qn', 'eor'], axis=1)
     # Append dataframe to existing table
-    d.to_sql('dwd', conn, if_exists='append', index=False)
+    df.to_sql('dwd', conn, if_exists='append', index=False)
+    # Export table 'dwd' as json
+    df = pd.read_sql('SELECT * FROM dwd', conn)
+    with open('data.json.txt', 'w') as f:
+        df.to_json(f)
+
+    avg_df = pd.DataFrame(columns=['timestamp', 'average_temperature'])
+    for i in range(len(df) // 6):
+        rows = df['temperature'].iloc[i*6:i*6+6]
+        avg_df.loc[i] = [df['timestamp'][6 * i], rows.mean()]
+    avg_df.to_sql('hourly_avg', conn, if_exists='replace', index=False)
 
 
 if __name__ == '__main__':
