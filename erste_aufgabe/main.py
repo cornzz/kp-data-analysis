@@ -26,20 +26,16 @@ def download_data(refresh_old_data):
 def main():
     download_data(True)
 
-    # Create table 'new' in db with new data
     conn = sql.connect('the.db')
-    d = pandas.read_csv(open('data.txt'), delimiter=";")
-    d.to_sql('new', conn, if_exists='replace', index=False)
-
-    # Insert data from 'new' table into 'dwd' table
-    c = conn.cursor()
-    statement = '''INSERT INTO dwd
-        SELECT MESS_DATUM, STATIONS_ID, TT_10, TM5_10, TD_10, RF_10, PP_10 FROM new
-        WHERE MESS_DATUM > 202010131050 AND MESS_DATUM < 202010232400'''
-    c.execute(statement)
-    c.execute('DROP TABLE new')
-    conn.commit()
-    conn.close()
+    # Create dataframe with renamed columns
+    d = pandas.read_csv(open('data.txt'), delimiter=";", header=0, names=['id', 'timestamp', 'qn', 'airpressure',
+                                                                          'temperature', 'temperature_ground', 'humidity',
+                                                                          'temperature_dew', 'eor'])
+    # Drop irrelevant data
+    d = d.query("timestamp > 202010131050 & timestamp < 202010232400")\
+         .drop(['qn', 'eor'], axis=1)
+    # Append dataframe to existing table
+    d.to_sql('dwd', conn, if_exists='append', index=False)
 
 
 if __name__ == '__main__':
