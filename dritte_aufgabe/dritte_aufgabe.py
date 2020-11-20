@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 
 data = np.loadtxt('cost.csv', delimiter=',', dtype=int)
@@ -14,7 +14,7 @@ def f(x, y=None):
 
 
 def nelder_mead(points, alpha, gamma, rho, sigma):
-    # Repeat while std of points costs > 2
+    # Repeat while std of points costs > 2 (this condition is not met when point coordinates are equal)
     while np.std(points[:, 2]) > 2:
         # Sort points by cost
         points = points[points[:, 2].argsort()]
@@ -58,8 +58,33 @@ def nelder_mead(points, alpha, gamma, rho, sigma):
     return points[0]
 
 
-start = np.array([[rows - 1, 0, f(rows - 1, 0)],
-                  [rows - 1, cols - 1, f(rows - 1, cols - 1)],
-                  [0, cols // 2, f(0, cols // 2)]])
-minimum_nm = nelder_mead(start, alpha=1, gamma=2, rho=0.5, sigma=0.5)
+minimum_nm = [0, 0, np.inf]
+# Do 200 iterations of the nelder mead algorithm with random starting points
+for i in np.arange(200):
+    start = np.array([np.random.randint(0, min(data.shape), 3) for _ in np.arange(3)])
+    start[:, -1] = [f(point) for point in start[:, :-1]]
+    temp_nm = nelder_mead(start, alpha=1, gamma=2, rho=0.5, sigma=0.5)
+    if temp_nm[-1] < minimum_nm[-1]:
+        minimum_nm = temp_nm
+
+print('------------------ Task 1 ------------------')
 print(minimum_nm)
+
+
+def f(x):
+    x, y = x
+    return (1.5 - x + x*y)**2 + (2.25 - x + x*y**2)**2 + (2.625 - x + x*y**3)**2
+
+
+def g(x):
+    x, y = x
+    dx = (1.5 - x + x*y)*(-2 + 2*y) + (2.25 - x + x*y**2)*(-2 + 2*y**2) + (2.625 - x + x*y**3)*(-2 + 2*y**3)
+    dy = (1.5 - x + x*y)*(2*x) + (2.25 - x + x*y**2)*(4*x*y) + (2.625 - x + x*y**3)*(6*x*y**2)
+    return [dx, dy]
+
+
+print('------------------ Task 2 ------------------')
+# Minimize f(x, y) using the conjugate gradient method, with and without provided derivation of f
+print(minimize(f, np.array([1, 1]), method='CG'))
+print()
+print(minimize(f, np.array([1, 1]), method='CG', jac=g))
