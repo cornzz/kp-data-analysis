@@ -2,7 +2,7 @@ venv/
 .idea/
 
 # Erste Aufgabe
-erste_aufgabe/the.db
-erste_aufgabe/new_data.zip
-erste_aufgabe/new_data.txt
-erste_aufgabe/db_updated.json
+*/the.db
+*/new_data.zip
+*/new_data.txt
+*/db_updated.json

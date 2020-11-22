@@ -18,7 +18,7 @@ def nelder_mead(points, alpha, gamma, rho, sigma):
     while np.std(points[:, 2]) > 2:
         # Sort points by cost
         points = points[points[:, 2].argsort()]
-        # Calc centroid with best two points and reflection of worst point
+        # Calc centroid with best two points
         x_0 = points[:-1, :-1].mean(axis=0, dtype=int)
 
         # fig, ax = plt.subplots(figsize=(10, 10))
