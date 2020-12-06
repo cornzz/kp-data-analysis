@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 from itertools import product
 from itertools import combinations
-import time
 
 
 def plot_clusters(clust, c):
@@ -42,8 +42,8 @@ def k_means(k):
 
 data = np.loadtxt('data-clust.csv', delimiter=',', skiprows=1)
 
-# clusters, centroids = k_means(7)
-# plot_clusters(clusters, centroids)
+clusters, centroids = k_means(7)
+plot_clusters(clusters, centroids)
 
 # ---- Task 2 ----
 
@@ -60,29 +60,26 @@ def calc_dist(cl1, cl2, fun):
 
 
 def agnes(cut, fun):
+    # Create cluster array with indices of all data points
     clust = [[i] for i in np.arange(len(data))]
-
+    # Iterate until desired amount of clusters reached
     while len(clust) != cut:
-        plot_clusters(clust, None)
-        clust_new = []
-        while len(clust) > 1 and len(clust) + len(clust_new) != cut:
-            cl_prod = list(combinations(clust, 2))
-            min_dist = np.argmin([calc_dist(data[x], data[y], fun) for x, y in cl_prod])
-            cl1, cl2 = cl_prod[min_dist]
-            clust_new.append([*cl1, *cl2])
-            clust.remove(cl1)
-            clust.remove(cl2)
-        if len(clust) > 0:
-            clust_new.append(clust.pop(0))
-        clust = clust_new
+        # plot_clusters(clust, None)
+        # Calculate all combinations of clusters and min distance
+        cl_prod = list(combinations(clust, 2))
+        min_dist = np.argmin([calc_dist(data[x], data[y], fun) for x, y in cl_prod])
+        cl1, cl2 = cl_prod[min_dist]
+        # Add new cluster and remove old subclusters
+        clust.append([*cl1, *cl2])
+        clust.remove(cl1)
+        clust.remove(cl2)
 
     return clust
 
 
-data = data[np.arange(0, len(data), 8)]
-#
+# Reduce data set to get acceptable run time (/32 ~ 0.5s, /16 ~ 4.5s, /8 ~ 32.5s, /4 ~294s)
+data = data[np.arange(0, len(data), 16)]
 time1 = time.time()
-clusters = agnes(5, 'centroid')  # single / complete / average / centroid
+clusters = agnes(7, 'centroid')  # single / complete / average / centroid
 print(time.time() - time1)
-print(clusters)
 plot_clusters(clusters, None)
