@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from itertools import product
+from itertools import combinations
 import time
 
 
 def plot_clusters(clust, c):
-    clr = ['#1f77b4', '#ff7f0e', '#2ca02c', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
     for i in np.arange(len(clust)):
         cls = clust[i]
-        plt.plot(data[cls, 0], data[cls, 1], 'o', c=clr[i % 9])
+        plt.plot(data[cls, 0], data[cls, 1], 'o', c=np.random.rand(3))
     if c is not None:
         plt.plot(c[:, 0], c[:, 1], 'X', c='r')
     plt.show()
@@ -66,21 +66,23 @@ def agnes(cut, fun):
         plot_clusters(clust, None)
         clust_new = []
         while len(clust) > 1 and len(clust) + len(clust_new) != cut:
-            cl = clust.pop(0)
-            min_dist = np.argmin([calc_dist(data[cl], data[x], fun) for x in clust])
-            clust_new.append([*cl, *clust[min_dist]])
-            del clust[min_dist]
-        if len(clust) != 0:
-            for cl in clust:
-                clust_new.append(cl)
+            cl_prod = list(combinations(clust, 2))
+            min_dist = np.argmin([calc_dist(data[x], data[y], fun) for x, y in cl_prod])
+            cl1, cl2 = cl_prod[min_dist]
+            clust_new.append([*cl1, *cl2])
+            clust.remove(cl1)
+            clust.remove(cl2)
+        if len(clust) > 0:
+            clust_new.append(clust.pop(0))
         clust = clust_new
+
     return clust
 
 
 data = data[np.arange(0, len(data), 8)]
-
+#
 time1 = time.time()
-clusters = agnes(7, 'average')  # single / complete / average / centroid
+clusters = agnes(5, 'centroid')  # single / complete / average / centroid
 print(time.time() - time1)
 print(clusters)
 plot_clusters(clusters, None)
