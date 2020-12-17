@@ -25,7 +25,7 @@ def download_data(refresh_old_data):
 
 
 def main():
-    download_data(True)
+    download_data(False)
 
     # Create dataframe from new data, rename columns, drop irrelevant columns
     df = pd.read_csv(open('new_data.txt'),

@@ -105,4 +105,4 @@ tree = gen_tree(df, all_attributes)
 decision_problem = {'forecast': 'rainy', 'temperature': 'hot', 'humidity': 'high', 'wind': 'strong'}
 print(tree)
 print('------------------ Task 1 ------------------')
-print('Classification of problem', decision_problem, ': ', classify(tree, decision_problem))
+print(f'Classification of problem {decision_problem}: {classify(tree, decision_problem)}')

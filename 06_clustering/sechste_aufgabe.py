@@ -45,6 +45,7 @@ data = np.loadtxt('data-clust.csv', delimiter=',', skiprows=1)
 clusters, centroids = k_means(7)
 plot_clusters(clusters, centroids)
 
+
 # ---- Task 2 ----
 
 
@@ -64,7 +65,6 @@ def agnes(cut, fun):
     clust = [[i] for i in np.arange(len(data))]
     # Iterate until desired amount of clusters reached
     while len(clust) != cut:
-        # plot_clusters(clust, None)
         # Calculate all combinations of clusters and min distance
         cl_prod = list(combinations(clust, 2))
         min_dist = np.argmin([calc_dist(data[x], data[y], fun) for x, y in cl_prod])
@@ -77,7 +77,8 @@ def agnes(cut, fun):
     return clust
 
 
-# Reduce data set to get acceptable run time (/32 ~ 0.5s, /16 ~ 4.5s, /8 ~ 32.5s, /4 ~294s)
+# Reduce data set to get acceptable run time (/32 ~ 0.5s, /16 ~ 4.5s, /8 ~ 32.5s, /4 ~300s, /2 ~2580s)
+# This agnes implementation is not efficient and has to be redone
 data = data[np.arange(0, len(data), 16)]
 time1 = time.time()
 clusters = agnes(7, 'centroid')  # single / complete / average / centroid

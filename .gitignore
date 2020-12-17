@@ -2,7 +2,6 @@ venv/
 .idea/
 
 # Erste Aufgabe
-*/the.db
 */new_data.zip
 */new_data.txt
 */db_updated.json
