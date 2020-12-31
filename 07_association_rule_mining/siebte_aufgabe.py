@@ -1,5 +1,3 @@
-import time
-
 import pandas as pd
 
 from fileinput import input
@@ -15,6 +13,7 @@ import timeit
 def get_frequent(items, tr, k, minsup):
     """
     Counts occurrences of given itemsets in transactions and eliminates sets that don't have required minimum support
+
     :param items:   List of itemsets
     :param tr:      List of transaction sets
     :param k:       Length of itemsets
@@ -34,6 +33,7 @@ def get_frequent(items, tr, k, minsup):
 def apriori_gen(L, k):
     """
     Generates candidate supersets C of length k from frequent itemsets L
+
     :param L:   DataFrame where rows are frequent itemsets of length k-1, last column is frequency
     :param k:   Length of candidate itemsets of length k
     :return:    DataFrame where rows are candidate itemsets of length k
@@ -63,6 +63,7 @@ def apriori(t, items, minsup):
     """
     Generates itemsets of frequent items by iteratively passing over the data while increasing the size of itemsets
     (Exponential complexity)
+
     :param t:       List of transactions (sets of items)
     :param items:   Set of all items that occur in the transactions
     :param minsup:  Minimum support (frequency) for frequent itemsets
@@ -93,6 +94,7 @@ def eclat(d, minsup):
     """
     Generates itemsets of frequent items by transforming to a vertical layout and forming set intersections
     (Equivalence CLAss Transformation)
+
     :param d:       List of transactions (sets of items)
     :param minsup:  Minimum support (frequency) for frequent itemsets
     :return:        List of dictionaries {itemset: transactions}

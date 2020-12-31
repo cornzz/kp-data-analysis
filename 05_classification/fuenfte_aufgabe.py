@@ -57,6 +57,8 @@ def choose_best_attr(examples, attributes):
 
 def gen_tree(examples, attributes, branch_value=None):
     """
+    Generates decision tree using the ID3 algorithm
+
     :param examples: set of examples which are used for the recursive splitting
     :param attributes: list of attributes on which the data can be split
     :param branch_value: value of branch coming from parent node

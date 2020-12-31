@@ -82,5 +82,5 @@ def agnes(cut, fun):
 data = data[np.arange(0, len(data), 16)]
 time1 = time.time()
 clusters = agnes(7, 'centroid')  # single / complete / average / centroid
-print(time.time() - time1)
+print(f'Agnes: {time.time() - time1:.3f}s')
 plot_clusters(clusters, None)
