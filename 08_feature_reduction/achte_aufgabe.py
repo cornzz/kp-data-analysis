@@ -8,14 +8,18 @@ from sklearn.model_selection import train_test_split
 
 
 df = pd.read_csv('diabetes.csv')
+mse = {'': ['MSE OLS regression',
+            'MSE LASSO regression',
+            'MSE OLS regression, after CBFS',
+            'MSE OLS regression, after PCA'],
+       'Train set': [],
+       'Test set': []}
 
-# ------------------- Task 1 -------------------
+# ------------------- Task 1 - OLS regression -------------------
 
-train, test = train_test_split(df, test_size=0.2, random_state=42)
-X_train = train.iloc[:, :-1]
-X_test = test.iloc[:, :-1]
-Y_train = train.iloc[:, -1]
-Y_test = test.iloc[:, -1]
+X = df.iloc[:, :-1]
+Y = df.iloc[:, -1]
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
 reg_OLS = LinearRegression().fit(X_train, Y_train)
 Y_pred_train_OLS = reg_OLS.predict(X_train)
@@ -23,19 +27,15 @@ Y_pred_test_OLS = reg_OLS.predict(X_test)
 mse_pred_train_OLS = mean_squared_error(Y_train, Y_pred_train_OLS)
 mse_pred_test_OLS = mean_squared_error(Y_test, Y_pred_test_OLS)
 
-print(f'MSE train / test (OLS regression): {mse_pred_train_OLS, mse_pred_test_OLS}')
-
-# ------------------- Task 2 -------------------
+# ------------------- Task 2 - LASSO regression -------------------
 
 reg_LASS = Lasso(alpha=0.1).fit(X_train, Y_train)
 Y_pred_train_LASS = reg_LASS.predict(X_train)
-mse_pred_train_LASS = mean_squared_error(Y_train, Y_pred_train_LASS)
 Y_pred_test_LASS = reg_LASS.predict(X_test)
+mse_pred_train_LASS = mean_squared_error(Y_train, Y_pred_train_LASS)
 mse_pred_test_LASS = mean_squared_error(Y_test, Y_pred_test_LASS)
 
-print(f'MSE train / test (LASSO regression): {mse_pred_train_LASS, mse_pred_test_LASS}')
-
-# ------------------- Task 3 -------------------
+# ------------------- Task 3 - Correlation-based Feature Selection -------------------
 
 features = X_train.transpose().to_numpy()
 corr_coef = np.corrcoef(features)
@@ -57,13 +57,11 @@ Y_pred_test_OLS_CBFS = reg_OLS_CBFS.predict(X_test_CBFS)
 mse_pred_train_OLS_CBFS = mean_squared_error(Y_train, Y_pred_train_OLS_CBFS)
 mse_pred_test_OLS_CBFS = mean_squared_error(Y_test, Y_pred_test_OLS_CBFS)
 
-print(f'MSE train / test (OLS regression) after CBFS: {mse_pred_train_OLS_CBFS, mse_pred_test_OLS_CBFS}')
-
-# ------------------- Task 4 -------------------
+# ------------------- Task 4 - Principal Component Analysis -------------------
 
 XX = X_train.T @ X_train
-_, v = np.linalg.eig(XX)
-W = np.transpose(v)
+_, eig_v = np.linalg.eig(XX)
+W = np.transpose(eig_v)
 W_2 = W[:, :2]
 X_train_PCA = X_train @ W_2
 
@@ -75,4 +73,9 @@ Y_pred_test_OLS_PCA = reg_OLS_PCA.predict(X_test_PCA)
 mse_pred_train_OLS_PCA = mean_squared_error(Y_train, Y_pred_train_OLS_PCA)
 mse_pred_test_OLS_PCA = mean_squared_error(Y_test, Y_pred_test_OLS_PCA)
 
-print(f'MSE train / test (OLS regression) after PCA: {mse_pred_train_OLS_PCA, mse_pred_test_OLS_PCA}')
+# ------------------- Result printing -------------------
+
+mse['Train set'] = [mse_pred_train_OLS, mse_pred_train_LASS, mse_pred_train_OLS_CBFS, mse_pred_train_OLS_PCA]
+mse['Test set'] = [mse_pred_test_OLS, mse_pred_test_LASS, mse_pred_test_OLS_CBFS, mse_pred_test_OLS_PCA]
+
+print(pd.DataFrame(mse).set_index(''))
