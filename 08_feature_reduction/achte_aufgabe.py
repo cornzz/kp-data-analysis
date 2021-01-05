@@ -11,9 +11,7 @@ df = pd.read_csv('diabetes.csv')
 mse = {'': ['MSE OLS regression',
             'MSE LASSO regression',
             'MSE OLS regression, after CBFS',
-            'MSE OLS regression, after PCA'],
-       'Train set': [],
-       'Test set': []}
+            'MSE OLS regression, after PCA']}
 
 # ------------------- Task 1 - OLS regression -------------------
 
@@ -59,9 +57,8 @@ mse_pred_test_OLS_CBFS = mean_squared_error(Y_test, Y_pred_test_OLS_CBFS)
 
 # ------------------- Task 4 - Principal Component Analysis -------------------
 
-XX = X_train.T @ X_train
-_, eig_v = np.linalg.eig(XX)
-W = np.transpose(eig_v)
+X_cov = X_train.T @ X_train
+_, W = np.linalg.eig(X_cov)
 W_2 = W[:, :2]
 X_train_PCA = X_train @ W_2
 
