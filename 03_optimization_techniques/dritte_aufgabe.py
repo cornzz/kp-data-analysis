@@ -59,7 +59,7 @@ def nelder_mead(points, alpha, gamma, rho, sigma):
 
 
 minimum_nm = [0, 0, np.inf]
-# Do 200 iterations of the nelder mead algorithm with random starting points
+# Do 200 rounds of the nelder mead algorithm with random starting points
 for i in np.arange(200):
     start = np.array([np.random.randint(0, min(data.shape), 3) for _ in np.arange(3)])
     start[:, -1] = [f(point) for point in start[:, :-1]]
