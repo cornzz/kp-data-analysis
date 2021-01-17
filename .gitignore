@@ -1,7 +1,13 @@
 venv/
 .idea/
+__pycache__
 
 # Erste Aufgabe
 */new_data.zip
 */new_data.txt
 */db_updated.json
+
+# Zehnte Aufgabe
+*.c
+*.so
+build/
