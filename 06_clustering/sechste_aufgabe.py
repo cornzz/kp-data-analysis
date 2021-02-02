@@ -78,7 +78,7 @@ def agnes(cut, fun):
 
 
 # Reduce data set to get acceptable run time (/32 ~ 0.5s, /16 ~ 4.5s, /8 ~ 32.5s, /4 ~300s, /2 ~2580s)
-# This agnes implementation is not efficient and has to be redone
+# This is a straightforward, naive agnes implementation and thus not very efficient
 data = data[np.arange(0, len(data), 16)]
 time1 = time.time()
 clusters = agnes(7, 'centroid')  # single / complete / average / centroid

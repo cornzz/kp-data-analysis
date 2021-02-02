@@ -62,8 +62,7 @@ df_step_int = df.copy()
 
 # Do linear and step interpolation for each interval
 for interval in mv:
-    first = min(interval)
-    last = max(interval)
+    first, last = min(interval), max(interval)
 
     start_temp = df.iloc[first-1, 1]
     end_temp = df.iloc[last+1, 1]

@@ -71,20 +71,20 @@ print('------------------ Task 1 ------------------')
 print(minimum_nm)
 
 
-def f(x):
-    x, y = x
-    return (1.5 - x + x*y)**2 + (2.25 - x + x*y**2)**2 + (2.625 - x + x*y**3)**2
+def f(xy):
+    x, y = xy
+    return (1.5 - x + x*y)**2 + (2.25 - x + x * y**2)**2 + (2.625 - x + x * y**3)**2
 
 
-def g(x):
-    x, y = x
-    dx = (1.5 - x + x*y)*(-2 + 2*y) + (2.25 - x + x*y**2)*(-2 + 2*y**2) + (2.625 - x + x*y**3)*(-2 + 2*y**3)
-    dy = (1.5 - x + x*y)*(2*x) + (2.25 - x + x*y**2)*(4*x*y) + (2.625 - x + x*y**3)*(6*x*y**2)
+def g(xy):
+    x, y = xy
+    dx = (1.5 - x + x*y) * (-2 + 2*y) + (2.25 - x + x * y**2) * (-2 + 2 * y**2) + (2.625 - x + x * y**3) * (-2 + 2 * y**3)
+    dy = (1.5 - x + x*y) * (2*x) + (2.25 - x + x * y**2) * (4*x*y) + (2.625 - x + x * y**3) * (6*x * y**2)
     return [dx, dy]
 
 
 print('------------------ Task 2 ------------------')
 # Minimize f(x, y) using the conjugate gradient method, with and without provided derivation of f
-print(minimize(f, np.array([1, 1]), method='CG'))
+print(minimize(f, x0=[1, 1], method='CG'))
 print()
-print(minimize(f, np.array([1, 1]), method='CG', jac=g))
+print(minimize(f, x0=[1, 1], method='CG', jac=g))

@@ -60,9 +60,9 @@ mse_pred_test_OLS_CBFS = mean_squared_error(Y_test, Y_pred_test_OLS_CBFS)
 X_cov = X_train.T @ X_train
 _, W = np.linalg.eig(X_cov)
 W_2 = W[:, :2]
-X_train_PCA = X_train @ W_2
 
-X_test_PCA = X_test.drop(X_test.columns[2:], axis=1)  # TODO: ???
+X_train_PCA = X_train @ W_2
+X_test_PCA = X_test @ W_2
 
 reg_OLS_PCA = LinearRegression().fit(X_train_PCA, Y_train)
 Y_pred_train_OLS_PCA = reg_OLS_PCA.predict(X_train_PCA)
@@ -76,3 +76,10 @@ mse['Train set'] = [mse_pred_train_OLS, mse_pred_train_LASS, mse_pred_train_OLS_
 mse['Test set'] = [mse_pred_test_OLS, mse_pred_test_LASS, mse_pred_test_OLS_CBFS, mse_pred_test_OLS_PCA]
 
 print(pd.DataFrame(mse).set_index(''))
+
+#                                   Train set     Test set
+#
+# MSE OLS regression              2868.546584  2900.173288
+# MSE LASSO regression            2935.252584  2798.190969
+# MSE OLS regression, after CBFS  2909.772720  2852.490493
+# MSE OLS regression, after PCA   4001.869769  3497.720792
