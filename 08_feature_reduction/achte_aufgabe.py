@@ -62,7 +62,7 @@ _, W = np.linalg.eig(X_cov)
 W_2 = W[:, :2]
 X_train_PCA = X_train @ W_2
 
-X_test_PCA = X_test.drop(X_test.columns[2:], axis=1)
+X_test_PCA = X_test.drop(X_test.columns[2:], axis=1)  # TODO: ???
 
 reg_OLS_PCA = LinearRegression().fit(X_train_PCA, Y_train)
 Y_pred_train_OLS_PCA = reg_OLS_PCA.predict(X_train_PCA)
